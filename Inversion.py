@@ -1,9 +1,9 @@
-				#-----------------------------------------------------------
-				#-----------------------------------------------------------
-				# STRESS INVERSION FROM FAULT SLIP DATA - HOMOGENEOUS DATA
-				#				(USING THE GENETIC ALGORITHM)
-				#-----------------------------------------------------------
-				#-----------------------------------------------------------
+#			----------------------------------------------------------
+#			----------------------------------------------------------
+# 			 STRESS INVERSION FROM FAULT SLIP DATA - HOMOGENEOUS DATA
+#						(USING THE GENETIC ALGORITHM)
+#			----------------------------------------------------------
+#			----------------------------------------------------------
 
 
 import numpy as np 
@@ -15,21 +15,25 @@ import matplotlib.pyplot as plt
 random.seed()	#seed the random number - system time
 
 
-#--------------------
-#	ROTATION MATRIX	
-#--------------------
+#-------------------
+#	ROTATION MATRIX	 (3-dimensional rotation matrix: check out wikipedia)
+#-------------------
+""" x, y, z are the euler angles, euler_rotation multiplies the rotations about the three axes 
+	to get a conposite rrotation matrix """
 euler_z = lambda z: np.array([[np.cos(z), -np.sin(z), 0], [np.sin(z), np.cos(z), 0] ,[0, 0, 1]])
 euler_y = lambda y: np.array([[np.cos(y), 0, np.sin(y)], [0, 1, 0], [-np.sin(y), 0, np.cos(y)]])
 euler_x = lambda x: np.array([[1, 0, 0], [0, np.cos(x), -np.sin(x)], [0, np.sin(x), np.cos(x)]])
 
 euler_rotation = lambda x, y, z: z.dot(y.dot(x))
 
+#-----------------------------------------
 #	DIRECTION COSINES FROM AZIMUTH/PLUNGE
-#-------------------------------------------
+#-----------------------------------------
 dir_cosine = lambda az, pl: np.array([np.cos(pl)*np.sin(az), np.cos(pl)*np.cos(az), -np.sin(pl)])
 
+#----------------------------------------
 #	AZIMUTH/PLUNGE FROM DIRECTION COSINE
-#-------------------------------------------
+#----------------------------------------
 az_pl = lambda vector: np.array([np.degrees(np.arctan2(vector[0], vector[1])), 
 								np.degrees(np.arcsin(-vector[2]/np.linalg.norm(vector)))])
 
@@ -43,8 +47,12 @@ dec2bin = lambda x, n:format(x, 'b').zfill(n)
 #	FITNESS FUNCTION
 #---------------------
 def fitnessFunc(stress_tensor, pop_size, n_i):
-	"This function computes the sum of two phases of misfit averaged over the selective data set"
-	input_data = xlrd.open_workbook('uselessdata.xls')
+	"""This function computes the mean of the misfits of the individual data points.  
+		Misfit is calculated as the difference between observed and the theoretical
+		shear stress directions. For the mathematics of this function refer to my 
+		'soon to be published paper' """
+
+	input_data = xlrd.open_workbook('uselessdata.xls')	#change the filename here for the data to be inverted
 	first_sheet = input_data.sheet_by_index(0)
 	dip_d = np.radians(first_sheet.col_values(0))
 	dip_a = np.radians(first_sheet.col_values(1))
@@ -57,10 +65,9 @@ def fitnessFunc(stress_tensor, pop_size, n_i):
 	slip_vector = np.zeros((length,3))
 	fitness = np.zeros((pop_size,1))
 	
-
 	#	SUB FITNESS FUNCTION
 	def subfitnessFunc(sigma, slip, normal):
-		"This function computes the composite misfit for each phase, each datum"
+		"This function computes the composite misfit for each datum"
 		stress_vector = sigma.dot(normal)
 		observed_shear_component = stress_vector.dot(slip)
 		stress_vector_mag = np.linalg.norm(stress_vector, 2)
@@ -90,7 +97,7 @@ def fitnessFunc(stress_tensor, pop_size, n_i):
 		for w in range(0,length):
 			normal = normal_vector[w,:]
 			slip = slip_vector[w,:]
-			sigma = stress_tensor[q,:,:]	# SEPARATION PHASE 1:A
+			sigma = stress_tensor[q,:,:]	
 
 			f = subfitnessFunc(sigma, slip, normal)
 			sum_f += f 
@@ -286,7 +293,8 @@ for i in range(0,3):
 	a1 = az_pl(t_matrix[count,i])
 	azimuth = a1[0] if a1[0]>0 else (a1[0] + 360)
 	plunge = a1[1]
-	print "The principal stress sigma %d orientation is:%d/%d " %(i+1,azimuth,plunge)
+	j = 3 - i 
+	print "Sigma %d orientation is (Azimuth/Plunge):%d/%d " %(j,azimuth,plunge)
 
 print "The final stress ellipsoid ratio is \n1. phi = %r" %(1 - phi_en[count])
 
