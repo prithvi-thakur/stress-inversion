@@ -212,11 +212,8 @@ for n_i in range(0,noi):
 								[0, phi_en[i], 0],
 								[0, 0, 0]]
 
-	for i in range(0, pop_size):
 		t_matrix[i,:,:] = euler_rotation(euler_x(alpha_en[i]), euler_y(beta_en[i]), euler_z(gamma_en[i]))
 
-	for i in range(0, pop_size):
-		#stress_tensor[i,:,:] = (t_matrix[i,:,:].dot(reduced_tensor[i,:,:])).dot(np.transpose(t_matrix[i,:,:]))
 		stress_tensor[i,:,:] = (np.transpose(t_matrix[i,:,:]).dot(reduced_tensor[i,:,:])).dot(t_matrix[i,:,:])
 
 	#	FITNESS EVALUATION
