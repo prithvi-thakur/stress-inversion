@@ -113,7 +113,7 @@ def fitnessFunc(stress_tensor, pop_size, n_i):
 #---------------------
 def crossoverFunc(parents, size, bits):
 	"""This function performs single point crossover for input array of strings.
-	The entire bottom eighty percent individuals undergo crossover"""
+	Sixty percent individuals undergo crossover"""
 	children = np.zeros((size), np.dtype('a6'))
 
 	for i in range(0, int(size/2)):
@@ -121,11 +121,17 @@ def crossoverFunc(parents, size, bits):
 		x1 = parents[i]
 		x2 = parents[size - i - 1]
 
-		ch1 = x1[0:x_site] + x2[x_site:bits]
-		ch2 = x2[0:x_site] + x1[x_site:bits]
+		if (np.random.randint(0, 100)) > 40 :
+			ch1 = x1[0:x_site] + x2[x_site:bits]
+			ch2 = x2[0:x_site] + x1[x_site:bits]
 
-		children[i] = ch1
-		children[size - i - 1] = ch2
+			children[i] = ch1
+			children[size - i - 1] = ch2
+		
+		else:
+			children[i] = x1
+			children[size - i - 1] = x2
+
 
 	return children
 #-------------------
@@ -158,7 +164,7 @@ def mutationFunc(parents, size, bits):
 pop_size = 1000		# Population size
 noi = 60			# Number of Iterations
 bits = 6			# Number of bits of each parameter
-elite = 20			# Percentage of elite individuals
+elite = 5			# Percentage of elite individuals
 t = int(elite * 0.01 * pop_size)	# Fraction of elite individuals 
 print "The Population size is %d and the number of iterations is %d" % (pop_size, noi)
 
@@ -306,4 +312,3 @@ plt.plot(x, pop_avg, 'b-', x, pop_best, 'r-')
 plt.xlabel('Iterations')
 plt.ylabel('Misfit')
 plt.show()	
-
