@@ -3,13 +3,13 @@ Python 2.7 programs for forward modelling and inversion of stress from fault-sli
 
 There are four files-
 
-SyntheticData.py: creates a set of 20 ideal synthetic fault-slip data sets. You can manipulate the values of sigma1, sigma3 and the stress ratio (phi) values to get the desired stress regime. Running this program creates an excel sheet with its columns as dip direction, dip, trend of lineation and the plunge of lineation. Note that the plunge will be negative for reverse faults and positive for normal faults. The reference frame is North, East and Up as x, y and z respectively.
+<b>SyntheticData.py:</b> creates a set of 20 ideal synthetic fault-slip data sets. You can manipulate the values of sigma1, sigma3 and the stress ratio (phi) values to get the desired stress regime. Running this program creates an excel sheet with its columns as dip direction, dip, trend of lineation and the plunge of lineation. Note that the plunge will be negative for reverse faults and positive for normal faults. The reference frame is North, East and Up as x, y and z respectively.
   
-demo.xls: This is the excel sheet of synthetic data sets. Just run the synthetic data with the desired stress tensor as the input to change the contents of this file.
+<b>demo.xls:</b> This is the excel sheet of synthetic data sets. Just run the synthetic data with the desired stress tensor as the input to change the contents of this file.
   
-GAstress.py: This is the stress inversion program for homogeneous fault-slip data. It is based on the genetic algorithms to perform inversion of fault-slip data to get the reduced stress tensor. For details refer: http://www.sciencedirect.com/science/article/pii/S0191814116302036
+<b>GAstress.py:</b> This is the stress inversion program for homogeneous fault-slip data. It is based on the genetic algorithms to perform inversion of fault-slip data to get the reduced stress tensor. For details refer: http://www.sciencedirect.com/science/article/pii/S0191814116302036
 
-hga.py: The stress inversion program for heterogeneous fault-slip data. The algorithm is described in detail in my paper _____. I'll add it here once it is accepted.
+<b>hga.py:</b> The stress inversion program for heterogeneous fault-slip data. The algorithm is described in detail in my paper _____. I'll add it here once it is accepted.
   
   
 SPECIFIC INSTRUCTIONS:
