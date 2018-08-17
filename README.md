@@ -37,7 +37,7 @@ Instructions:
 
 4. Go to line 82(GAstress.py) or line 63(hga.py), and within the paranthesis change the name of the input data file as desired along with the file extension. E.g: "demo.xlsx", "data2.xls", etc.
 
-5. <b>For running hga.py:</b> go to line 207, and change the value of M to the number of expected stress states. The default value is 4. It is advisable to run the program once with the value of M (step 5 above) more than the expected stress states and a second time with the value of M equal to the expected stress states.
+5. <b>For running hga.py:</b> go to line 207, and change the value of M to the number of expected stress states. The default value is 4. It is advisable to run the program once with the value of M (step 4 above) more than the expected stress states and a second time with the value of M equal to the expected stress states.
 
 6. Run the script. Wait for a few minutes before result pops up.
 
