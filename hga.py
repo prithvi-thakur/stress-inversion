@@ -1,6 +1,6 @@
-#--------------------------------------------------------------------------------------------
-#		HETEROGENEOUS GENETIC ALGORITHM METHOD: INVERSION OF HETEROGENEOUS FAULT-SLIP DATA
-#--------------------------------------------------------------------------------------------
+#######################################################################
+# HETEROGENEOUS GENETIC ALGORITHM METHOD: INVERSION OF HETEROGENEOUS FAULT-SLIP DATA
+#######################################################################
 
 #	Written in Python 2.7
 #
@@ -62,7 +62,7 @@ dec2bin = lambda x, n:format(x, 'b').zfill(n)
 #---------------------
 def fitnessFunc(stress_tensor, M, pop_size, n_i):
 	"This function computes the composite misfit for M stress states"
-	input_data = xlrd.open_workbook('Demo.xlsx')
+	input_data = xlrd.open_workbook('demo.xls')
 	first_sheet = input_data.sheet_by_index(0)
 	dip_d = np.radians(first_sheet.col_values(0))
 	dip_a = np.radians(first_sheet.col_values(1))
@@ -140,12 +140,11 @@ def fitnessFunc(stress_tensor, M, pop_size, n_i):
 		fitness[q] = sum_f #+ std_f
 
 	if n_i == noi-1:
-		print "The number of data points in stress tensor: \n" 
+		print("The number of data points in stress tensor: \n") 
 		for i1 in range(M):
-			print counter[i1]
-		print separated
-		print "Minimum fitness"
-		print np.nanmin(fitness)
+			print(counter[i1])
+		print(separated)
+		print("Minimum fitness = ", np.nanmin(fitness))
 
 
 	return fitness
@@ -158,7 +157,7 @@ def fitnessFunc(stress_tensor, M, pop_size, n_i):
 def crossoverFunc(parents, size, bits):
 	"""This function performs single point crossover for input array of strings.
 	The crossover probability is 60 percent"""
-	children = np.zeros((size), np.dtype('a6'))
+	children = np.zeros((size), np.dtype('O'))
 
 	for i in range(0, int(size/2)):
 		x_site = np.random.randint(0, bits - 1)
@@ -183,21 +182,22 @@ def crossoverFunc(parents, size, bits):
 #	MUTATION FUNCTION
 #---------------------
 def mutationFunc(parents, size, bits):
-	"This function performs mutation for input array of strings"
-	child = np.dtype('a6')
-	prob = np.random.randint(0,100)
+    "This function performs mutation for input array of strings"
+    child = np.dtype('a6')
+    prob = np.random.randint(0,100)
 
-	if prob > 90:
-		s = np.random.randint(0, size)
-		b = np.random.randint(0, bits)
-		p = parents[s]
-		temp1 = p[0:b] 
-		temp2 = str(1 - int(p[b]))
-		temp3 = p[b+1:bits]
-		child = temp1 + temp2 + temp3
-		parents[s] = child
+    if prob > 90:
+        s = np.random.randint(0, size)
+        b = np.random.randint(0, bits)
+        p = parents[s]
+        temp1 = p[0:b] 
+        temp2 = str(1 - int(p[b]))
+        temp3 = p[b+1:bits]
+        #  print(temp1, "\n", temp2, "\n", temp3)
+        child = temp1 + temp2 + temp3
+        parents[s] = child
 
-	return parents
+    return parents
 
 
 #-----------------
@@ -206,10 +206,10 @@ def mutationFunc(parents, size, bits):
 pop_size = 1000		# Population size
 noi = 120			# Number of Iterations
 bits = 6			# Number of bits of each parameter
-M = 1				# Expected Stress states
+M = 2				# Expected Stress states
 elite = 10			# Percentage of elite individuals
 t = int(elite * 0.01 * pop_size)	# Fraction of elite individuals 
-print "The Population size is %d and the number of iterations is %d" % (pop_size, noi)
+print("The Population size is %d and the number of iterations is %d" % (pop_size, noi))
 
 reduced_tensor = [np.zeros((pop_size,3,3)) for x in range(M)]
 stress_tensor = [np.zeros((pop_size,3,3)) for x in range(M)]
@@ -228,10 +228,10 @@ offspring_gamma = [np.zeros((pop_size)) for x in range(M)]
 offspring_phi = [np.zeros((pop_size)) for x in range(M)]
 
 
-bin_alpha = [np.zeros((pop_size - t), np.dtype('a6')) for x in range(M)]
-bin_beta = [np.zeros((pop_size - t), np.dtype('a6')) for x in range(M)]
-bin_gamma = [np.zeros((pop_size - t), np.dtype('a6')) for x in range(M)]
-bin_phi = [np.zeros((pop_size - t), np.dtype('a6')) for x in range(M)]
+bin_alpha = [np.zeros((pop_size - t), np.dtype('O')) for x in range(M)]
+bin_beta = [np.zeros((pop_size - t), np.dtype('O')) for x in range(M)]
+bin_gamma = [np.zeros((pop_size - t), np.dtype('O')) for x in range(M)]
+bin_phi = [np.zeros((pop_size - t), np.dtype('O')) for x in range(M)]
 
 xover_alpha = [np.zeros((pop_size - t)) for x in range(M)]
 xover_beta = [np.zeros((pop_size - t)) for x in range(M)]
@@ -261,106 +261,116 @@ phi = [np.random.randint(0, 64, size = pop_size) for x in range(M)]
 #-------------------------
 for n_i in range(0,noi):
 	
-	#	ENCODING
-	alpha_en = [(2*np.pi*x/63.00) for x in alpha]
-	beta_en = [((np.pi/2)*x/63.00) for x in beta]
-	gamma_en = [(2*np.pi*x/63.00) for x in gamma]
-	phi_en = [(x/63.00) for x in phi]
-	
-	#	GENERATING STRESS TENSORS
-	for i in range(M):
-		for j in range(pop_size):
-			reduced_tensor[i][j,:,:] = [[1, 0, 0],
-								[0, phi_en[i][j], 0],
-								[0, 0, 0]]
+    #	ENCODING
+    alpha_en = [(2*np.pi*x/63.00) for x in alpha]
+    beta_en = [((np.pi/2)*x/63.00) for x in beta]
+    gamma_en = [(2*np.pi*x/63.00) for x in gamma]
+    phi_en = [(x/63.00) for x in phi]
+    
+    #	GENERATING STRESS TENSORS
+    for i in range(M):
+        for j in range(pop_size):
+            reduced_tensor[i][j,:,:] = [[1, 0, 0],
+                                        [0, phi_en[i][j], 0],
+                                        [0, 0, 0]]
 
-			t_matrix[i][j,:,:] = euler_rotation(euler_x(alpha_en[i][j]), euler_y(beta_en[i][j]), euler_z(gamma_en[i][j]))
-			stress_tensor[i][j,:,:] = (t_matrix[i][j].dot(reduced_tensor[i][j])).dot(np.transpose(t_matrix[i][j]))
+            t_matrix[i][j,:,:] = euler_rotation(euler_x(alpha_en[i][j]), euler_y(beta_en[i][j]), euler_z(gamma_en[i][j]))
+            stress_tensor[i][j,:,:] = (t_matrix[i][j].dot(reduced_tensor[i][j])).dot(np.transpose(t_matrix[i][j]))
 
-	#	FITNESS EVALUATION
-	fitness = fitnessFunc(stress_tensor, M, pop_size, n_i)
-	pop_best[n_i] = np.nanmin(fitness)
-	pop_avg[n_i] = np.average(fitness)
+    #	FITNESS EVALUATION
+    fitness = fitnessFunc(stress_tensor, M, pop_size, n_i)
+    pop_best[n_i] = np.nanmin(fitness)
+    pop_avg[n_i] = np.average(fitness)
 
-	#	ELITISM
-	elite_index = np.argsort(fitness, axis = 0)
-	for i in range(M):
-		for j in range(t):
-			offspring_alpha[i][j] = alpha[i][elite_index[j]]
-			offspring_beta[i][j] = beta[i][elite_index[j]]
-			offspring_gamma[i][j] = gamma[i][elite_index[j]]
-			offspring_phi[i][j] = phi[i][elite_index[j]]
+    #	ELITISM
+    elite_index = np.argsort(fitness, axis = 0)
+    for i in range(M):
+        for j in range(t):
+            offspring_alpha[i][j] = alpha[i][elite_index[j]]
+            offspring_beta[i][j] = beta[i][elite_index[j]]
+            offspring_gamma[i][j] = gamma[i][elite_index[j]]
+            offspring_phi[i][j] = phi[i][elite_index[j]]
 
-	#	TOURNAMENT SELECTION
-	for i in range(M):
-		for j in range(0,pop_size - t):
-			t1 = np.random.randint(t,pop_size)
-			t2 = np.random.randint(t,pop_size)
-			if fitness[t1] < fitness[t2]:
-				m_alpha[i][j] = alpha[i][t1]
-				m_beta[i][j] = beta[i][t1]
-				m_gamma[i][j] = gamma[i][t1]
-				m_phi[i][j] = phi[i][t1]
+    #	TOURNAMENT SELECTION
+    for i in range(M):
+        for j in range(0,pop_size - t):
+            t1 = np.random.randint(t,pop_size)
+            t2 = np.random.randint(t,pop_size)
+            if fitness[t1] < fitness[t2]:
+                m_alpha[i][j] = alpha[i][t1]
+                m_beta[i][j] = beta[i][t1]
+                m_gamma[i][j] = gamma[i][t1]
+                m_phi[i][j] = phi[i][t1]
 
-			else:
-				m_alpha[i][j] = alpha[i][t2]
-				m_beta[i][j] = beta[i][t2]
-				m_gamma[i][j] = gamma[i][t2]
-				m_phi[i][j] = phi[i][t2]
+            else:
+                m_alpha[i][j] = alpha[i][t2]
+                m_beta[i][j] = beta[i][t2]
+                m_gamma[i][j] = gamma[i][t2]
+                m_phi[i][j] = phi[i][t2]
 
-	#	CONVERTING DECIMAL TO BINARY
-	for i in range(M):
-		for j in range(0, pop_size - t):
-			bin_alpha[i][j] = dec2bin(int(m_alpha[i][j]), bits)
-			bin_beta[i][j] = dec2bin(int(m_beta[i][j]), bits)
-			bin_gamma[i][j] = dec2bin(int(m_gamma[i][j]), bits)
-			bin_phi[i][j] = dec2bin(int(m_phi[i][j]), bits)
+    #	CONVERTING DECIMAL TO BINARY
+    for i in range(M):
+        for j in range(0, pop_size - t):
+            bin_alpha[i][j] = dec2bin(int(m_alpha[i][j]), bits)
+            bin_beta[i][j] = dec2bin(int(m_beta[i][j]), bits)
+            bin_gamma[i][j] = dec2bin(int(m_gamma[i][j]), bits)
+            bin_phi[i][j] = dec2bin(int(m_phi[i][j]), bits)
 
-	#	CROSSOVER
-	for i in range(M):
-		xover_alpha[i] = crossoverFunc(bin_alpha[i], pop_size - t, bits)
-		xover_beta[i] = crossoverFunc(bin_beta[i], pop_size - t, bits)
-		xover_gamma[i] = crossoverFunc(bin_gamma[i], pop_size - t, bits)
-		xover_phi[i] = crossoverFunc(bin_phi[i], pop_size - t, bits)
+    #	CROSSOVER
+    for i in range(M):
+        xover_alpha[i] = crossoverFunc(bin_alpha[i], pop_size - t, bits)
+        xover_beta[i] = crossoverFunc(bin_beta[i], pop_size - t, bits)
+        xover_gamma[i] = crossoverFunc(bin_gamma[i], pop_size - t, bits)
+        xover_phi[i] = crossoverFunc(bin_phi[i], pop_size - t, bits)
 
-	#	MUTATION
-	for i in range(M):
-		mut_alpha[i] = mutationFunc(xover_alpha[i], pop_size - t, bits)
-		mut_beta[i] = mutationFunc(xover_beta[i], pop_size - t, bits)
-		mut_gamma[i] = mutationFunc(xover_gamma[i], pop_size - t, bits)
-		mut_phi[i] = mutationFunc(xover_phi[i], pop_size - t, bits)
+    #	MUTATION
+    for i in range(M):
+        mut_alpha[i] = mutationFunc(xover_alpha[i], pop_size - t, bits)
+        mut_beta[i] = mutationFunc(xover_beta[i], pop_size - t, bits)
+        mut_gamma[i] = mutationFunc(xover_gamma[i], pop_size - t, bits)
+        mut_phi[i] = mutationFunc(xover_phi[i], pop_size - t, bits)
 
-	for i in range(M):
-		for j in range(t, pop_size):
-			offspring_alpha[i][j] = int(mut_alpha[i][j - t], 2)
-			offspring_beta[i][j] = int(mut_beta[i][j - t], 2)
-			offspring_gamma[i][j] = int(mut_gamma[i][j - t], 2)
-			offspring_phi[i][j] = int(mut_phi[i][j - t], 2)
+        for j in range(pop_size - t):
+            if xover_alpha[i][j] == 0:
+                xover_alpha[i][j] = '000000'
+            if xover_beta[i][j] == 0:
+                xover_beta[i][j] = '000000'
+            if xover_gamma[i][j] == 0:
+                xover_gamma[i][j] = '000000'
+            if xover_phi[i][j] == 0:
+                xover_phi[i][j] = '000000'
 
-	#	UPDATING THE INITIAL POPULATION
-	alpha = offspring_alpha
-	beta = offspring_beta
-	gamma = offspring_gamma
-	phi = offspring_phi
+    for i in range(M):
+        for j in range(t, pop_size):
+            offspring_alpha[i][j] = int(mut_alpha[i][j - t], 2)
+            offspring_beta[i][j] = int(mut_beta[i][j - t], 2)
+            offspring_gamma[i][j] = int(mut_gamma[i][j - t], 2)
+            offspring_phi[i][j] = int(mut_phi[i][j - t], 2)
+
+    #	UPDATING THE INITIAL POPULATION
+    alpha = offspring_alpha
+    beta = offspring_beta
+    gamma = offspring_gamma
+    phi = offspring_phi
 #-------------------------------------------
 
 
 #	THE BEST FIT INDIVIDUAL IN THE POPULATION
 count = 0
 for i in range(0,pop_size):
-	if fitness[count] == np.nanmin(fitness):
-		count = i
-		break
+    if fitness[count] == np.nanmin(fitness):
+        count = i
+        break
 
 for i in range(M):
-	for j in range(0,3):
-		a1 = az_pl(t_matrix[i][count,j,:])
-		azimuth = a1[0] if a1[0]>0 else (a1[0] + 360)
-		plunge = a1[1]
-		print "Sigma %d of stress regime %d is:%d/%d " %(3-j, i+1, azimuth,plunge)
+    for j in range(0,3):
+        a1 = az_pl(t_matrix[i][count,j,:])
+        azimuth = a1[0] if a1[0]>0 else (a1[0] + 360)
+        plunge = a1[1]
+        print("Sigma %d of stress regime %d is:%d/%d " %(3-j, i+1, azimuth,plunge))
 
 for i in range(M):
-	print "Stress Ratio of stress regime %d is: %r" %(i+1, 1-phi_en[i][count])
+    print("Stress Ratio of stress regime %d is: %r" %(i+1, 1-phi_en[i][count]))
 
 x = np.arange(1,noi+1)
 plt.plot(x, pop_avg, 'b-', x, pop_best, 'r-')
