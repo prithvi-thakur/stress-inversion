@@ -1,5 +1,5 @@
 # stress-inversion
-Python 2.7 programs for forward modelling and inversion of stress from fault-slip observations using genetic algorithm.
+Python programs for forward modelling and inversion of stress from fault-slip observations using genetic algorithm.
 
 There are four files-
 
@@ -9,7 +9,7 @@ There are four files-
   
 <b>GAstress.py:</b> This is the stress inversion program for homogeneous fault-slip data. It is based on the genetic algorithms to perform inversion of fault-slip data to get the reduced stress tensor. For details refer: http://www.sciencedirect.com/science/article/pii/S0191814116302036
 
-<b>hga.py:</b> The stress inversion program for heterogeneous fault-slip data. Never got time to publish the results. I am trying to work on an improved version [here](https://github.com/thehalfspace/gaps) during my free time. 
+<b>hga.py:</b> The stress inversion program for heterogeneous fault-slip data. ~~Never got time to publish the results~~ (https://www.sciencedirect.com/science/article/abs/pii/S0191814119304705). I am trying to work on an improved version [here](https://github.com/thehalfspace/gaps) during my free time. 
   
   
 SPECIFIC INSTRUCTIONS:
